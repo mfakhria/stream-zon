@@ -1,0 +1,57 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - frontend
+      - signaling
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+      SIGNALING_DOMAIN: ${SIGNALING_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  frontend:
+    image: streamzon-frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+        NEXT_PUBLIC_SIGNALING_URL: ${NEXT_PUBLIC_SIGNALING_URL}
+        NEXT_PUBLIC_MAX_PARTICIPANTS: ${NEXT_PUBLIC_MAX_PARTICIPANTS:-5}
+    expose:
+      - "3000"
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+      NEXT_PUBLIC_SIGNALING_URL: ${NEXT_PUBLIC_SIGNALING_URL}
+      NEXT_PUBLIC_MAX_PARTICIPANTS: ${NEXT_PUBLIC_MAX_PARTICIPANTS:-5}
+      ICE_SERVERS_JSON: ${ICE_SERVERS_JSON}
+      TURN_USERNAME: ${TURN_USERNAME}
+      TURN_PASSWORD: ${TURN_PASSWORD}
+    depends_on:
+      - signaling
+
+  signaling:
+    image: streamzon-signaling:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - "4000"
+    restart: unless-stopped
+    environment:
+      PORT: 4000
+      NEXT_PUBLIC_MAX_PARTICIPANTS: ${NEXT_PUBLIC_MAX_PARTICIPANTS:-5}
+      SIGNALING_ALLOWED_ORIGIN: ${SIGNALING_ALLOWED_ORIGIN}
+
+volumes:
+  caddy_data:
+  caddy_config:

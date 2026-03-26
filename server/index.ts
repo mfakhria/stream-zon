@@ -4,9 +4,9 @@ import { createServer } from "node:http";
 
 import { Server } from "socket.io";
 
-import { DEFAULT_MAX_PARTICIPANTS } from "@/lib/constants";
-import { getMaxParticipants } from "@/lib/env";
-import { generateRoomCode, normalizeRoomCode } from "@/lib/room-code";
+import { DEFAULT_MAX_PARTICIPANTS } from "../lib/constants";
+import { getMaxParticipants } from "../lib/env";
+import { generateRoomCode, normalizeRoomCode } from "../lib/room-code";
 import type {
   AppErrorPayload,
   ChatMessage,
@@ -15,7 +15,7 @@ import type {
   QualityPresetKey,
   RoomState,
   ServerToClientEvents,
-} from "@/lib/types";
+} from "../lib/types";
 
 type ParticipantRecord = Participant;
 

@@ -1,0 +1,36 @@
+services:
+  frontend:
+    image: streamzon-frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+        NEXT_PUBLIC_SIGNALING_URL: ${NEXT_PUBLIC_SIGNALING_URL:-http://localhost:4000}
+        NEXT_PUBLIC_MAX_PARTICIPANTS: ${NEXT_PUBLIC_MAX_PARTICIPANTS:-5}
+    depends_on:
+      - signaling
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      NEXT_PUBLIC_SIGNALING_URL: ${NEXT_PUBLIC_SIGNALING_URL:-http://localhost:4000}
+      NEXT_PUBLIC_MAX_PARTICIPANTS: ${NEXT_PUBLIC_MAX_PARTICIPANTS:-5}
+      ICE_SERVERS_JSON: ${ICE_SERVERS_JSON:-[{"urls":["stun:stun.l.google.com:19302"]}]}
+      TURN_USERNAME: ${TURN_USERNAME:-streamzon}
+      TURN_PASSWORD: ${TURN_PASSWORD:-replace-with-strong-secret}
+
+  signaling:
+    image: streamzon-signaling:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+    environment:
+      PORT: 4000
+      NEXT_PUBLIC_MAX_PARTICIPANTS: ${NEXT_PUBLIC_MAX_PARTICIPANTS:-5}
+      SIGNALING_ALLOWED_ORIGIN: ${SIGNALING_ALLOWED_ORIGIN:-http://localhost:3000}

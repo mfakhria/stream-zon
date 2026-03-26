@@ -4,6 +4,13 @@ This guide deploys only the signaling server from this repository to Render.
 
 The frontend stays on Vercel.
 
+This repo now also includes a Docker setup for signaling:
+
+- `Dockerfile`
+- `Dockerfile.frontend`
+- `docker-compose.yml`
+- `docker-compose.signaling.yml`
+
 ## What Render will run
 
 Render should run:
@@ -34,16 +41,38 @@ Official docs:
 - https://render.com/docs/web-services
 - https://render.com/docs/deploy-node-express-app
 
-## Step 2. Fill in the Render service settings
+## Step 2. Choose the runtime mode
+
+You can deploy in either of these ways:
+
+- Node runtime
+- Docker runtime
+
+### Option A. Node runtime
+
+Use this if you want the simplest setup in Render.
+
+### Option B. Docker runtime
+
+Use this if you want Render to build from the included `Dockerfile`.
+
+Both options work for this repo.
+
+## Step 3. Fill in the Render service settings
 
 Use these values:
 
 - `Name`: `streamzon-signaling`
 - `Region`: choose the closest region to most of your users
 - `Branch`: your deploy branch, usually `main`
-- `Runtime`: `Node`
+- `Runtime`: `Node` or `Docker`
+
+If you choose `Node`, use:
+
 - `Build Command`: `npm install`
 - `Start Command`: `npx tsx server/index.ts`
+
+If you choose `Docker`, Render will use the repository `Dockerfile` automatically, so you do not need separate build/start commands.
 
 For testing only, you can choose the `Free` instance type.
 
@@ -55,7 +84,7 @@ Official docs:
 
 - https://render.com/docs/free
 
-## Step 3. Add environment variables in Render
+## Step 4. Add environment variables in Render
 
 In the Render service settings, add:
 
@@ -72,7 +101,7 @@ https://your-app.vercel.app,https://your-preview.vercel.app
 
 Render provides `PORT` automatically. You do not need to set it manually unless you want to override it.
 
-## Step 4. Deploy
+## Step 5. Deploy
 
 1. Click `Create Web Service`.
 2. Wait for the first build and deploy to finish.
@@ -90,7 +119,7 @@ Render gives the service a public hostname like:
 https://streamzon-signaling.onrender.com
 ```
 
-## Step 5. Connect Vercel frontend to Render
+## Step 6. Connect Vercel frontend to Render
 
 In your Vercel project environment variables, set:
 
@@ -98,7 +127,7 @@ In your Vercel project environment variables, set:
 
 Then redeploy the Vercel frontend.
 
-## Step 6. Test end-to-end
+## Step 7. Test end-to-end
 
 Test this exact flow:
 
@@ -137,6 +166,8 @@ This repo already supports `PORT`, so use:
 npx tsx server/index.ts
 ```
 
+If you deploy with Docker, this is already handled by the included `Dockerfile`.
+
 ### Free service sleeps
 
 That is normal on Render Free. The first connection after idle may be slow.
@@ -145,5 +176,6 @@ That is normal on Render Free. The first connection after idle may be slow.
 
 - https://render.com/docs/web-services
 - https://render.com/docs/deploy-node-express-app
+- https://render.com/docs/docker
 - https://render.com/docs/free
 - https://render.com/docs/environment-variables

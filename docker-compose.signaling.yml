@@ -1,0 +1,12 @@
+services:
+  signaling:
+    image: streamzon-signaling:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      NEXT_PUBLIC_MAX_PARTICIPANTS: 5
+      SIGNALING_ALLOWED_ORIGIN: http://localhost:3000

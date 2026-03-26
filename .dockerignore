@@ -1,0 +1,10 @@
+.git
+.next
+node_modules
+npm-debug.log*
+plan.md
+.env
+.env.local
+.env.vercel.example
+.env.render.example
+tsconfig.tsbuildinfo
