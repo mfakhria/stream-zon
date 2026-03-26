@@ -142,7 +142,6 @@ async function captureDisplayStream(
       width: { ideal: config.width },
       height: { ideal: config.height },
       frameRate: { ideal: config.frameRate },
-      displaySurface: "monitor",
     },
     audio: {
       echoCancellation: true,
@@ -551,6 +550,8 @@ export function RoomPageClient({
         const [videoTrack] = stream.getVideoTracks();
 
         if (videoTrack) {
+          videoTrack.contentHint = "detail";
+
           const handleEnded = () => {
             tearDownLocalShare();
             setNoticeMessage("Screen sharing stopped from the browser picker.");
