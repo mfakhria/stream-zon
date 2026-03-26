@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: streamzon-signaling
+    runtime: node
+    buildCommand: npm install
+    startCommand: npx tsx server/index.ts
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: NEXT_PUBLIC_MAX_PARTICIPANTS
+        value: 5
+      - key: SIGNALING_ALLOWED_ORIGIN
+        sync: false

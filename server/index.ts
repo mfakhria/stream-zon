@@ -28,7 +28,7 @@ type RoomRecord = {
   maxParticipants: number;
 };
 
-const port = Number(process.env.SIGNALING_PORT ?? 4000);
+const port = Number(process.env.PORT ?? process.env.SIGNALING_PORT ?? 4000);
 const allowedOrigins = (process.env.SIGNALING_ALLOWED_ORIGIN ?? "http://localhost:3000")
   .split(",")
   .map((origin) => origin.trim())
